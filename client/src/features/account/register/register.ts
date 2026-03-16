@@ -14,17 +14,17 @@ export class Register {
   cancelRegister = output<boolean>();
   protected creds = {} as RegisterCreds;
 
-  register(){
+  register() {
     this.accountService.register(this.creds).subscribe({
-      next: response=>{
+      next: response => {
         console.log(response);
         this.cancel();
       },
-      error: error=>console.log(error)
+      error: error => console.log(error)
     });
   }
 
-  cancel(){
+  cancel() {
     this.cancelRegister.emit(false);
   }
 }
