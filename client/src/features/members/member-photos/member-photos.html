@@ -7,7 +7,7 @@
         <img src="{{photo.url}}" alt="photo of member" class="w-full rounded-lg">
         @if(accountService.currentUser()?.id === memberService.member()?.id){
         <app-star-button [disabled]="photo.url === memberService.member()?.imageUrl"
-            [selected]="photo.url === memberService.member()?.imageUrl" (onButtonClick)="setMainPhoto(photo)"
+            [selected]="photo.url === memberService.member()?.imageUrl" (clickEvent)="setMainPhoto(photo)"
             class="absolute top-1 right-1" />
         <app-delete-button [disabled]="photo.url === memberService.member()?.imageUrl"
             (clickEvent)="deletePhoto(photo.id)" class="absolute top-1 left-1" />

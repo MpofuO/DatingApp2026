@@ -115,7 +115,7 @@ namespace API.Controllers
         {
             var member = await memberRepository.GetMemberForUpdate(User.GetMemberId());
 
-            if (member == null) return BadRequest("Cannot gett member from token");
+            if (member == null) return BadRequest("Cannot get member from token");
 
             var photo = member.Photos.SingleOrDefault(x => x.Id == photoId);
 

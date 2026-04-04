@@ -9,10 +9,10 @@ import { Component, input, output } from '@angular/core';
 export class StarButton {
   disabled = input<boolean>();
   selected = input<boolean>();
-  onButtonClick = output<null>();
+  clickEvent = output<Event>();
 
-  onClick() {
-    this.onButtonClick.emit(null);
+  onClick(event:Event) {
+    this.clickEvent.emit(event);
   }
 
 }
