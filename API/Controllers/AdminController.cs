@@ -13,13 +13,13 @@ public class AdminController(UserManager<AppUser> userManager) : BaseApiControll
     [HttpGet("users-with-roles")]
     public async Task<ActionResult<IOrderedEnumerable<UserRoleDto>>> GetUsersWithRoles()
     {
-        var users = await userManager.Users.ToListAsync();
-        var userList = new List<UserRoleDto>();
+        var users = await userManager.Users.OrderBy(user => user.Email).ToListAsync();
+        var userList = new List<object>();
 
         foreach (var user in users)
         {
             var roles = await userManager.GetRolesAsync(user);
-            userList.Add(new UserRoleDto
+            userList.Add(new
             {
                 Id = user.Id,
                 Email = user.Email!,
@@ -27,12 +27,12 @@ public class AdminController(UserManager<AppUser> userManager) : BaseApiControll
             });
         }
 
-        return Ok(userList.OrderBy(user=>user.Email));
+        return Ok(userList);
     }
 
     [Authorize(Policy = "RequireAdminRole")]
     [HttpPost("edit-roles/{userId}")]
-    public async Task<ActionResult<IList<string>>> EditRoles(string userId, [FromQuery]string roles)
+    public async Task<ActionResult<IList<string>>> EditRoles(string userId, [FromQuery] string roles)
     {
         if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role");
 
@@ -40,7 +40,7 @@ public class AdminController(UserManager<AppUser> userManager) : BaseApiControll
 
         var user = await userManager.FindByIdAsync(userId);
 
-        if (user == null) return BadRequest ("Could not retrieve user");
+        if (user == null) return BadRequest("Could not retrieve user");
 
         var userRoles = await userManager.GetRolesAsync(user);
 
