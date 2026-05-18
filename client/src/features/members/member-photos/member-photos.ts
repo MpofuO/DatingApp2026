@@ -37,9 +37,6 @@ export class MemberPhotos implements OnInit {
         this.memberService.editMode.set(false);
         this.loading.set(false);
         this.photos.update(photos => [...photos, photo])
-        if (!this.memberService.member()?.imageUrl) {
-          this.setMainLocalPhoto(photo);
-        }
       },
       error: error => {
         console.log('Error uploading image: ', error);

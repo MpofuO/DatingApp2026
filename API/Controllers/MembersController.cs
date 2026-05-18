@@ -1,10 +1,8 @@
-using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
-using CloudinaryDotNet.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +31,7 @@ namespace API.Controllers
         [HttpGet("{id}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> GetMemberPhotos(string id)
         {
-            return Ok(await uow.MemberRepository.GetPhotosForMemberAsync(id));
+            return Ok(await uow.MemberRepository.GetPhotosForMemberAsync(id, User.GetMemberId() == id));
         }
         [HttpPut]
         public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
@@ -78,12 +76,6 @@ namespace API.Controllers
                 MemberId = User.GetMemberId()
             };
 
-            if (member.ImageUrl == null)
-            {
-                member.ImageUrl = photo.Url;
-                member.User.ImageUrl = photo.Url;
-            }
-
             member.Photos.Add(photo);
 
             if (await uow.Complete()) return photo;
@@ -100,7 +92,7 @@ namespace API.Controllers
 
             var photo = member.Photos.SingleOrDefault(x => x.Id == photoId);
 
-            if (member.ImageUrl == photo?.Url || photo == null)
+            if (member.ImageUrl == photo?.Url || photo == null || !photo.IsApproved)
             {
                 return BadRequest("Cannot set this as main image");
             }
