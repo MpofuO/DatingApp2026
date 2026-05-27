@@ -1,5 +1,6 @@
 using System;
 using API.Entities;
+using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,8 @@ public class LikesRepository(AppDbContext context) : ILikesRepository
                     .Select(x => x.SourceMember);
                 break;
         }
+
+        result = result.ExcludeBlocked(context, likesParams.MemberId!);
 
         return await PaginationHelper.CreateAsync(result, likesParams.PageNumber, likesParams.PageSize);
     }

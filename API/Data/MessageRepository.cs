@@ -63,6 +63,8 @@ public class MessageRepository(AppDbContext context) : IMessageRepository
                 && x.RecipientDeleted == false)
         };
 
+        query = query.ExcludeBlocked(context, messageParams.MemberId!);
+
         var messageQuery = query.Select(MessageExtensions.ToDtoProjection());
 
         return await PaginationHelper.CreateAsync(messageQuery, messageParams.PageNumber,

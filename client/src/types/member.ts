@@ -35,3 +35,10 @@ export class MemberParams {
   pageSize = 10;
   orderBy = 'lastActive';
 }
+
+export type MemberBlock = {
+  sourceMemberId: string;
+  targetMemberId: string;
+  reason: string;
+  targetMember: Member;
+}

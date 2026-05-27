@@ -32,6 +32,12 @@ public class Member
     
     [JsonIgnore]
     public List<Message> MessagesReceived { get; set; } = [];
+    
+    [JsonIgnore]
+    public List<MemberBlock> BlockedMembers { get; set; } = [];
+   
+   [JsonIgnore]
+    public List<MemberBlock> BlockedByMembers { get; set; } = [];
 
     [JsonIgnore]
     [ForeignKey(nameof(Id))]

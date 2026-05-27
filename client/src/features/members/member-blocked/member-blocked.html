@@ -1,0 +1,52 @@
+@if(blocks().length === 0) {
+    <div class="alert alert-info mt-3 text-lg">
+        You do not have any blocked members.
+    </div>
+} @else{
+    <div class="overflow-x-auto mt-3">
+        <table class="table bg-base-100 table-fixed w-full">
+            <thead>
+            <tr>
+                <th class="w-2/9">Member Name</th>
+                <th class="w-5/9">Reason</th>
+                <th class="w-2/9"></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (block of blocks(); track block.targetMemberId) {
+                    <tr>
+                        <td class="w-2/9">
+                            <div class="flex items-center gap-3">
+                                <div class="h-12 w-12">
+                                    <img 
+                                        class="rounded-full"
+                                        src="{{block.targetMember.imageUrl || '/user.png'}}"
+                                        alt="image of member">
+                                </div>
+                                <div>{{block.targetMember.displayName}}</div>
+                            </div>
+                        </td>
+                        <td class="truncate w-5/9">{{block.reason}}</td>
+                        <td class="w-2/9 space-x-3">
+                            <button
+                                (click)="openModal(block.targetMemberId!)"
+                                class="btn btn-primary">
+                                Edit
+                            </button>
+                            <button (click)="unblockMember($event, block.targetMemberId!)"
+                                class="btn btn-success">
+                                Unblock
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<app-block-modal 
+    #blockModal
+    (submitData)="updateBlock($event)"
+    [memberBlock]="{id: '', reason: ''}"
+    [mode]="'Edit'"></app-block-modal>

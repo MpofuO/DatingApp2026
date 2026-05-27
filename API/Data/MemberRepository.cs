@@ -1,4 +1,5 @@
 using API.Entities;
+using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,8 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
             "created" => query.OrderByDescending(x => x.Created),
             _ => query.OrderByDescending(x => x.LastActive)
         };
+
+        query = query.ExcludeBlocked(context, memberParams.CurrentMemberId!);
 
         return await PaginationHelper.CreateAsync(query,
             memberParams.PageNumber, memberParams.PageSize);

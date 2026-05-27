@@ -1,0 +1,27 @@
+<dialog #blockModal class="modal">
+    <div class="modal-box max-w-lg">
+        <h3 class="text-lg font-bold">{{mode()}} block</h3>
+
+        <div class="flex justify-center w-full items-center mt-6">
+            <div class="flex flex-col w-full gap-6">
+                <label class="label font-semibold">
+                    Enter reason for block:
+                </label>
+                <div class="flex gap-3">
+                    <textarea class="textarea textarea-bordered w-full h-24" 
+                        [(ngModel)]="memberBlock().reason"
+                        name="reason" placeholder="Enter reason" wrap="soft"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <button (click)="submit()" class="btn btn-primary">Submit</button>
+            <button type="button" (click)="close()" class="btn btn-outline">Cancel</button>
+        </div>
+    </div>
+
+    <form method="dialog" class="modal-backdrop">
+        <button (click)="close()">Close</button>
+    </form>
+</dialog>

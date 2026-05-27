@@ -171,6 +171,26 @@ namespace API.Data.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("API.Entities.MemberBlock", b =>
+                {
+                    b.Property<string>("SourceMemberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TargetMemberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("SourceMemberId", "TargetMemberId");
+
+                    b.HasIndex("TargetMemberId");
+
+                    b.ToTable("Blocks");
+                });
+
             modelBuilder.Entity("API.Entities.MemberLike", b =>
                 {
                     b.Property<string>("SourceMemberId")
@@ -300,6 +320,13 @@ namespace API.Data.Migrations
                             ConcurrencyStamp = "c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "vip-id",
+                            ConcurrencyStamp = "d",
+                            Name = "VIP",
+                            NormalizedName = "VIP"
                         });
                 });
 
@@ -431,6 +458,25 @@ namespace API.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Entities.MemberBlock", b =>
+                {
+                    b.HasOne("API.Entities.Member", "SourceMember")
+                        .WithMany("BlockedMembers")
+                        .HasForeignKey("SourceMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Member", "TargetMember")
+                        .WithMany("BlockedByMembers")
+                        .HasForeignKey("TargetMemberId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SourceMember");
+
+                    b.Navigation("TargetMember");
+                });
+
             modelBuilder.Entity("API.Entities.MemberLike", b =>
                 {
                     b.HasOne("API.Entities.Member", "SourceMember")
@@ -544,6 +590,10 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.Member", b =>
                 {
+                    b.Navigation("BlockedByMembers");
+
+                    b.Navigation("BlockedMembers");
+
                     b.Navigation("LikedByMembers");
 
                     b.Navigation("LikedMembers");

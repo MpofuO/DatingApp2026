@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<Message> Messages { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
+    public DbSet<MemberBlock> Blocks { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -24,7 +25,8 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
             .HasData(
                 new IdentityRole { Id = "member-id", ConcurrencyStamp = "a", Name = "Member", NormalizedName = "MEMBER" },
                 new IdentityRole { Id = "moderator-id", ConcurrencyStamp = "b", Name = "Moderator", NormalizedName = "MODERATOR" },
-                new IdentityRole { Id = "admin-id", ConcurrencyStamp = "c", Name = "Admin", NormalizedName = "ADMIN" }
+                new IdentityRole { Id = "admin-id", ConcurrencyStamp = "c", Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = "vip-id", ConcurrencyStamp = "d", Name = "VIP", NormalizedName = "VIP" }
             );
 
         modelBuilder.Entity<Message>()
@@ -49,6 +51,21 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
         modelBuilder.Entity<MemberLike>()
             .HasOne(s => s.TargetMember)
             .WithMany(t => t.LikedByMembers)
+            .HasForeignKey(s => s.TargetMemberId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<MemberBlock>()
+        .HasKey(x => new { x.SourceMemberId, x.TargetMemberId });
+
+        modelBuilder.Entity<MemberBlock>()
+            .HasOne(s => s.SourceMember)
+            .WithMany(m => m.BlockedMembers)
+            .HasForeignKey(s => s.SourceMemberId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MemberBlock>()
+            .HasOne(s => s.TargetMember)
+            .WithMany(m => m.BlockedByMembers)
             .HasForeignKey(s => s.TargetMemberId)
             .OnDelete(DeleteBehavior.NoAction);
 

@@ -8,8 +8,8 @@
                 <div class="flex text-2xl text-primary items-center">
                     {{member.displayName}}, {{member.dateOfBirth |age}}
                     @if (presenceService.onlineUsers().includes(member.id)) {
-        <span class="status status-success status-xl ml-3"></span>
-    }
+                    <span class="status status-success status-xl ml-3"></span>
+                    }
                 </div>
 
                 <div class="text-sm">
@@ -27,12 +27,11 @@
         </div>
         <div class="card-actions justify-between gap-2 px-2 mb-3">
             <button routerLink="/members" class="btn btn-info flex-1">Go back</button>
-            <button 
-            (click)="likesService.toggleLike(member.id)"
-            [class.btn-error]="hasLiked()"
-            [class.btn-success]="!hasLiked()"
-            class="btn flex-1">{{hasLiked() ? 'Remove like' : 'Like user'}}</button>
+            <button (click)="likesService.toggleLike(member.id)" [class.btn-error]="hasLiked()"
+                [class.btn-success]="!hasLiked()" class="btn flex-1">{{hasLiked() ? 'Remove like' : 'Like user'}}</button>
+            <button *appHasRole="['VIP']" (click)="blockModal.open()" class="btn btn-warning">Block user</button>
         </div>
+
     </div>
     <div class="card bg-base-100 w-3/4 p-6 flex flex-col h-[85vh]">
         <div class="flex justify-between items-center">
@@ -51,3 +50,8 @@
 } @else {
 <div>Member not found</div>
 }
+
+<app-block-modal 
+    #blockModal
+    (submitData)="blockMember($event)"
+    [memberBlock]="{id: memberService.member()?.id || '', reason: ''}"></app-block-modal>
